@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Add Marks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-4">
+
+    <div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
+
+        <h2 class="text-2xl font-bold text-center mb-6">
+            Add Marks
+        </h2>
+
+        <!-- Result Declared Message -->
+        <div th:if="${resultDeclared}"
+             class="bg-green-100 text-green-700 p-3 rounded mb-4">
+
+            ✅ Result has been declared by Admin.
+            Marks editing is now disabled.
+
+        </div>
+
+        <!-- Edit Disabled Message -->
+        <div th:if="${!editEnabled and !resultDeclared}"
+             class="bg-red-100 text-red-700 p-3 rounded mb-4">
+
+            Admin has disabled marks editing for this Subject/Class.
+
+        </div>
+
+        <!-- SELECT SUBJECT -->
+        <form th:action="@{/teacher/add-marks}" method="get">
+
+            <!-- SUBJECT -->
+            <select name="subjectId" class="border p-2">
+
+                <option disabled selected>
+                    Select Subject
+                </option>
+
+                <option th:each="s : ${assignedSubjects}"
+                        th:value="${s.id}"
+                        th:text="${s.subjectName}">
+                </option>
+
+            </select>
+
+            <!-- CLASS -->
+            <select name="className" class="border p-2">
+
+                <option value="">
+                    Select Class
+                </option>
+
+                <option th:each="c : ${classes}"
+                        th:value="${c}"
+                        th:text="${c}">
+                </option>
+
+            </select>
+
+            <button type="submit"
+                    class="bg-blue-600 text-white px-4 py-2 rounded">
+
+                Load Students
+
+            </button>
+
+        </form>
+
+        <!-- MARKS FORM -->
+        <form th:action="@{/teacher/save-marks}" method="post">
+
+            <input type="hidden"
+                   name="subjectId"
+                   th:value="${selectedSubjectId}">
+
+            <div class="overflow-x-auto mt-6">
+
+                <table class="w-full border border-gray-300 text-sm sm:text-base">
+
+                    <thead class="bg-gray-200">
+
+                        <tr>
+
+                            <th class="p-2 border">Roll No</th>
+
+                            <th class="p-2 border">Name</th>
+
+                            <th class="p-2 border">Father Name</th>
+
+                            <th class="p-2 border">DOB</th>
+
+                            <th class="p-2 border">Class</th>
+
+                            <th class="p-2 border">Marks</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr th:each="s:${students}" class="text-center">
+
+                            <td class="p-2 border"
+                                th:text="${s.id}">
+                            </td>
+
+                            <td class="p-2 border"
+                                th:text="${s.studentName}">
+                            </td>
+
+                            <td class="p-2 border"
+                                th:text="${s.fatherName}">
+                            </td>
+
+                            <td class="p-2 border"
+                                th:text="${s.dob}">
+                            </td>
+
+                            <td class="p-2 border"
+                                th:text="${s.className}">
+                            </td>
+
+                            <td class="p-2 border">
+
+                                <div class="flex flex-col sm:flex-row gap-2 items-center">
+
+                                    <input type="number"
+                                           name="marks"
+                                           placeholder="Marks"
+                                           class="border p-1 rounded w-full sm:w-24"
+                                           th:disabled="${!editEnabled || resultDeclared}">
+
+                                    <input type="hidden"
+                                           name="studentId"
+                                           th:value="${s.id}">
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <button type="submit"
+                    class="w-full mt-6 bg-green-600 text-white p-2 rounded"
+                    th:disabled="${!editEnabled || resultDeclared}">
+
+                Save Marks
+
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

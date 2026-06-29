@@ -1,0 +1,257 @@
+<div th:fragment="contact" 
+     class="min-h-[70vh] bg-gray-100 py-6 px-4 sm:px-6 lg:px-8" 
+     id="contact">
+
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+    <div class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden 
+                grid grid-cols-1 md:grid-cols-2">
+
+
+        <!-- LEFT INFO SECTION -->
+        <div class="bg-blue-900 text-white p-6 sm:p-10 
+                    flex flex-col justify-center">
+
+
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4 flex items-center gap-3">
+
+                <i class="fa-solid fa-address-book"></i>
+
+                Contact Us
+
+            </h2>
+
+
+            <p class="text-blue-100 mb-6 text-sm sm:text-base">
+
+                We are here to help you. Reach out for any queries related to admissions,
+                academics, or school management system support.
+
+            </p>
+
+
+
+            <div class="space-y-4 text-sm sm:text-base">
+
+
+                <p class="flex items-center gap-3">
+
+                    <i class="fa-solid fa-location-dot text-xl"></i>
+
+                    School Management System Office
+
+                </p>
+
+
+
+                <p class="flex items-center gap-3">
+
+                    <i class="fa-solid fa-phone text-xl"></i>
+
+                    +91 6394412388
+
+                </p>
+
+
+
+                <p class="flex items-center gap-3 break-all">
+
+                    <i class="fa-solid fa-envelope text-xl"></i>
+
+                    ramkumar651763@gmail.com
+
+                </p>
+
+
+
+                <p class="flex items-center gap-3">
+
+                    <i class="fa-solid fa-clock text-xl"></i>
+
+                    Mon - Sat: 9:00 AM - 5:00 PM
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <!-- RIGHT FORM SECTION -->
+
+        <div class="p-6 sm:p-10">
+
+
+            <h3 class="text-2xl sm:text-3xl font-semibold text-gray-700 mb-6 flex items-center gap-3">
+
+
+                <i class="fa-solid fa-paper-plane text-blue-900"></i>
+
+                Send a Message
+
+
+            </h3>
+
+
+
+
+            <form id="contactForm" method="post" 
+                  class="space-y-5">
+
+
+                <div>
+
+                    <label class="block text-sm font-medium text-gray-600">
+                        Full Name
+                    </label>
+
+
+                    <div class="relative">
+
+
+                        <i class="fa-solid fa-user absolute left-3 top-4 text-gray-400"></i>
+
+
+                        <input 
+                        type="text" 
+                        id="name" 
+                        name="name"
+
+                        class="w-full mt-1 p-3 pl-10 border rounded-lg 
+                        focus:ring-2 focus:ring-blue-400 outline-none"
+
+                        placeholder="Enter your name">
+
+
+                    </div>
+
+                </div>
+
+
+
+
+
+
+                <div>
+
+
+                    <label class="block text-sm font-medium text-gray-600">
+                        Email
+                    </label>
+
+
+                    <div class="relative">
+
+
+                        <i class="fa-solid fa-envelope absolute left-3 top-4 text-gray-400"></i>
+
+
+
+                        <input 
+                        type="email" 
+                        id="email" 
+                        name="email"
+
+
+                        class="w-full mt-1 p-3 pl-10 border rounded-lg 
+                        focus:ring-2 focus:ring-blue-400 outline-none"
+
+
+                        placeholder="Enter your email">
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+
+
+                <div>
+
+
+                    <label class="block text-sm font-medium text-gray-600">
+                        Message
+                    </label>
+
+
+
+                    <div class="relative">
+
+
+                        <i class="fa-solid fa-message absolute left-3 top-4 text-gray-400"></i>
+
+
+
+                        <textarea 
+                        rows="4" 
+                        id="message" 
+                        name="message"
+
+
+                        class="w-full mt-1 p-3 pl-10 border rounded-lg 
+                        focus:ring-2 focus:ring-blue-400 outline-none"
+
+
+                        placeholder="Write your message..."></textarea>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+
+
+                <button 
+                type="submit" 
+                id="sendBtn"
+
+
+                class="w-full sm:w-auto 
+                bg-blue-900 text-white 
+                px-6 py-3 rounded-lg 
+
+                hover:bg-blue-800 transition
+
+                flex items-center justify-center gap-2">
+
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+
+                    Send Message
+
+
+                </button>
+
+
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <div th:replace="~{fragments/fontawesomeCdn :: fontawesome}"></div>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- NAVBAR -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="flex-1 flex items-center justify-center px-4 py-10">
+
+    <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
+
+        <h2 class="text-3xl font-bold text-center text-green-900 mb-6">
+            Teacher Login
+        </h2>
+
+        <p th:if="${error}" class="bg-red-100 text-red-700 p-3 rounded mb-4 text-center"
+           th:text="${error}"></p>
+
+        <form th:action="@{/teacher/login}" method="post">
+
+            <div class="mb-4">
+                <label class="block font-semibold text-gray-700 mb-2">Teacher ID</label>
+                <input type="text" name="teacherId"
+                       class="w-full border rounded-lg p-3" required>
+            </div>
+
+            <div class="mb-5">
+                <label class="block font-semibold text-gray-700 mb-2">Password</label>
+                <input type="password" name="password"
+                       class="w-full border rounded-lg p-3" required>
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-green-900 text-white py-3 rounded-lg hover:bg-green-700">
+                Login
+            </button>
+        </form>
+
+        <!-- FORGOT PASSWORD BUTTON -->
+        <div class="text-center mt-5">
+            <button onclick="openForgot()" class="text-green-700 hover:underline">
+                Forgot Password?
+            </button>
+        </div>
+
+    </div>
+</main>
+
+<!-- ================= FORGOT PASSWORD MODAL ================= -->
+<div id="forgotModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+
+    <div class="bg-white p-6 rounded-xl w-96">
+
+        <h2 class="text-xl font-bold mb-4">Reset Password</h2>
+
+        <input id="forgotTeacherId" type="text"
+               placeholder="Enter Teacher ID"
+               class="border p-3 w-full rounded mb-3">
+
+        <button onclick="sendReset()"
+                class="bg-green-900 text-white w-full p-3 rounded mb-3">
+            Send OTP
+        </button>
+
+        <!-- OTP -->
+        <div id="otpSection" class="hidden">
+            <input id="otp" type="text"
+                   placeholder="Enter OTP"
+                   class="border p-3 w-full rounded mb-3">
+
+            <button onclick="verifyOtp()"
+                    class="bg-blue-700 text-white w-full p-3 rounded">
+                Verify OTP
+            </button>
+        </div>
+
+        <!-- NEW PASSWORD -->
+        <div id="passwordSection" class="hidden mt-3">
+            <input id="newPassword" type="password"
+                   placeholder="Enter New Password"
+                   class="border p-3 w-full rounded mb-3">
+
+            <button onclick="resetPassword()"
+                    class="bg-green-900 text-white w-full p-3 rounded">
+                Reset Password
+            </button>
+        </div>
+
+        <p id="msg" class="text-center mt-3 text-sm"></p>
+
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- ================= JS LOGIC ================= -->
+<script>
+
+let currentTeacherId = "";
+
+function openForgot() {
+    document.getElementById("forgotModal").classList.remove("hidden");
+}
+
+function sendReset() {
+
+    currentTeacherId = document.getElementById("forgotTeacherId").value;
+
+    fetch("/teacher/forgot-password", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ teacherId: currentTeacherId })
+    })
+    .then(res => res.text())
+    .then(data => {
+
+        document.getElementById("msg").innerHTML = data;
+
+        if (data.includes("OTP sent")) {
+            document.getElementById("otpSection").classList.remove("hidden");
+        }
+    });
+}
+
+function verifyOtp() {
+
+    let otp = document.getElementById("otp").value;
+
+    fetch("/teacher/verify-otp", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            teacherId: currentTeacherId,
+            otp: otp
+        })
+    })
+    .then(res => res.text())
+    .then(data => {
+
+        document.getElementById("msg").innerHTML = data;
+
+        if (data.includes("verified")) {
+            document.getElementById("passwordSection").classList.remove("hidden");
+        }
+    });
+}
+
+function resetPassword() {
+
+    let password = document.getElementById("newPassword").value;
+
+    fetch("/teacher/reset-password", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            teacherId: currentTeacherId,
+            password: password
+        })
+    })
+    .then(res => res.text())
+    .then(data => {
+
+        document.getElementById("msg").innerHTML = data;
+
+        if (data.includes("successfully")) {
+
+            setTimeout(() => {
+
+                document.getElementById("forgotModal").classList.add("hidden");
+
+                document.getElementById("forgotTeacherId").value = "";
+                document.getElementById("otp").value = "";
+                document.getElementById("newPassword").value = "";
+
+                document.getElementById("otpSection").classList.add("hidden");
+                document.getElementById("passwordSection").classList.add("hidden");
+                document.getElementById("msg").innerHTML = "";
+
+                window.location.reload();
+
+            }, 2000);
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <title>Admin Notice</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+</head>
+
+
+<body class="bg-gray-100 min-h-screen p-4">
+
+
+
+    <div class="max-w-5xl mx-auto">
+
+
+
+        <!-- FORM CARD -->
+
+        <div class="bg-white shadow-xl rounded-2xl p-6">
+
+
+            <h2 class="text-2xl md:text-3xl font-bold text-blue-900 text-center mb-6">
+
+                <i class="fa-solid fa-bullhorn"></i>
+
+                Send Notice
+
+            </h2>
+
+
+
+
+
+            <form id="noticeForm" class="space-y-4">
+
+
+
+                <input type="text" name="title" placeholder="Notice Title" required
+                    class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" />
+
+
+
+
+
+                <textarea name="message" placeholder="Write notice message" rows="5" required
+                    class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
+
+</textarea>
+
+
+
+
+
+
+                <select id="targetRole" name="targetRole" class="w-full border rounded-lg p-3">
+
+
+                    <option value="teacher">
+
+                        Teacher
+
+                    </option>
+
+
+                    <option value="student">
+
+                        Student
+
+                    </option>
+
+
+                    <option value="all">
+
+                        All
+
+                    </option>
+
+
+                </select>
+
+
+
+
+
+
+
+                <div id="classBox">
+
+
+                    <input id="targetClass" type="text" name="targetClass" placeholder="Class (Optional)"
+                        class="w-full border rounded-lg p-3" />
+
+
+                </div>
+
+
+
+
+
+
+                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-bold">
+
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                    Send Notice
+
+
+                </button>
+
+
+
+
+
+            </form>
+
+
+
+
+            <p id="result" class="text-center mt-4 font-bold">
+
+            </p>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <!-- NOTICE LIST -->
+
+       <!-- FILTER -->
+
+<div class="mt-8">
+
+<div class="flex flex-col md:flex-row gap-3 mb-5">
+
+
+<select id="filterRole"
+class="border p-3 rounded-lg w-full md:w-64">
+
+
+<option value="all">
+All Notices
+</option>
+
+
+<option value="teacher">
+Teacher Notices
+</option>
+
+
+<option value="student">
+Student Notices
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+<h2 class="text-2xl font-bold text-blue-900 mb-4">
+
+<i class="fa-solid fa-bell"></i>
+Existing Notices
+
+</h2>
+
+
+
+
+
+<div id="noticeContainer"
+class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <script>
+
+
+
+
+
+        // hide class for teacher
+
+
+        let role = document.getElementById("targetRole");
+
+        let classBox = document.getElementById("classBox");
+
+        let classInput = document.getElementById("targetClass");
+
+let filterRole =
+document.getElementById("filterRole");
+
+
+        function checkRole() {
+
+
+            if (role.value === "teacher") {
+
+
+                classBox.style.display = "none";
+
+                classInput.value = "";
+
+
+            }
+
+            else {
+
+
+                classBox.style.display = "block";
+
+
+            }
+
+
+        }
+
+
+        checkRole();
+
+
+        role.addEventListener("change", checkRole);
+
+
+
+
+
+
+
+
+
+        // SEND AJAX
+
+
+
+        document
+            .getElementById("noticeForm")
+            .addEventListener("submit", function (e) {
+
+
+                e.preventDefault();
+
+
+                let data = new FormData(this);
+
+
+
+                fetch("/admin/notices/send", {
+
+
+                    method: "POST",
+
+                    body: data
+
+
+                })
+
+                    .then(res => {
+
+
+                        document.getElementById("result").innerHTML =
+                            "✅ Notice Sent";
+
+
+                        this.reset();
+
+
+                        checkRole();
+
+
+                        setTimeout(() => {
+
+                            location.reload();
+
+                        }, 1000);
+
+
+
+                    })
+
+
+
+                    .catch(() => {
+
+
+                        document.getElementById("result").innerHTML =
+                            "❌ Error";
+
+
+                    });
+
+
+            });
+
+
+
+
+
+
+
+
+
+        // DELETE
+
+
+
+        function deleteNotice(id) {
+
+
+
+            if (!confirm("Delete this notice?"))
+
+                return;
+
+
+
+            fetch("/admin/notices/delete", {
+
+
+                method: "POST",
+
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+
+                },
+
+
+                body: "id=" + id
+
+
+
+            })
+
+
+                .then(() => {
+
+
+                    location.reload();
+
+
+                });
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+        // EDIT
+
+
+
+        function editNotice(id) {
+
+
+
+            let title =
+                prompt("Enter new title");
+
+
+            let message =
+                prompt("Enter new message");
+
+
+
+            if (!title || !message)
+
+                return;
+
+
+
+
+            fetch("/admin/notices/update", {
+
+
+                method: "POST",
+
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+
+                },
+
+
+
+                body:
+
+                    "id=" + id +
+
+                    "&title=" + encodeURIComponent(title) +
+
+                    "&message=" + encodeURIComponent(message)
+
+
+
+            })
+
+
+                .then(() => {
+
+
+                    alert("Updated");
+
+
+                    location.reload();
+
+
+                });
+
+
+
+        }
+
+
+
+
+
+
+filterRole.addEventListener(
+"change",
+loadNotices
+);
+
+
+
+function loadNotices(){
+
+
+fetch("/admin/notices/filter?role="
++filterRole.value)
+
+
+
+.then(res=>res.json())
+
+.then(data=>{
+
+
+let html="";
+
+
+
+data.forEach(n=>{
+
+
+html += `
+
+
+<div class="bg-white shadow rounded-xl p-5 
+flex justify-between">
+
+
+<div class="break-words">
+
+
+<h3 class="font-bold text-xl">
+${n.title}
+</h3>
+
+
+<p class="text-gray-600 mt-2">
+${n.message}
+</p>
+
+
+
+<p class="mt-2">
+Role :
+<b>${n.targetRole}</b>
+</p>
+
+
+
+<p>
+Class :
+<b>
+${n.targetClass ?? "All Classes"}
+</b>
+</p>
+
+
+
+</div>
+
+
+
+
+<div class="flex flex-col gap-2 ml-3">
+
+
+<button
+
+onclick="editNotice(${n.id})"
+
+class="bg-yellow-500 text-white 
+px-3 py-2 rounded">
+
+
+<i class="fa-solid fa-pen"></i>
+
+</button>
+
+
+
+
+
+<button
+
+onclick="deleteNotice(${n.id})"
+
+class="bg-red-600 text-white 
+px-3 py-2 rounded">
+
+
+<i class="fa-solid fa-trash"></i>
+
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+
+`;
+
+
+});
+
+
+
+document
+.getElementById("noticeContainer")
+.innerHTML=html;
+
+
+
+});
+
+
+}
+
+
+
+loadNotices();
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>

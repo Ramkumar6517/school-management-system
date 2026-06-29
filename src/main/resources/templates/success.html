@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Success</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col justify-between">
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="py-6 sm:py-12 flex-grow flex items-center justify-center">
+        <div class="container mx-auto px-4 w-full max-w-xl">
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 sm:p-10 border-t-4 border-green-500">
+
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 text-green-600 rounded-full mb-3 text-3xl">
+                        ✓
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-green-600">
+                        Registration Successful 🎉
+                    </h1>
+                    <p class="text-sm text-gray-500 mt-1">Your details have been saved successfully.</p>
+                </div>
+
+                <div class="space-y-3 text-sm sm:text-base text-gray-700 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    
+                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                        <span class="font-medium text-gray-500">Application ID:</span>
+                        <span class="font-bold text-gray-900" th:text="${student.applicationId}"></span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                        <span class="font-medium text-gray-500">Student ID:</span>
+                        <span class="font-bold text-gray-900" th:text="${student.studentId}"></span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                        <span class="font-medium text-gray-500">Status:</span>
+                        <span class="px-2 py-0.5 text-xs font-semibold rounded bg-yellow-100 text-yellow-800" th:text="${student.status}"></span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-gray-200 pb-2 pt-1">
+                        <span class="font-medium text-gray-600">Name:</span>
+                        <span class="text-gray-900 font-semibold" th:text="${student.studentName}"></span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                        <span class="font-medium text-gray-600">Father Name:</span>
+                        <span class="text-gray-900" th:text="${student.fatherName}"></span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                        <span class="font-medium text-gray-600">Gender:</span>
+                        <span class="text-gray-900" th:text="${student.gender}"></span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                        <span class="font-medium text-gray-600">Class:</span>
+                        <span class="text-gray-900" th:text="${student.className}"></span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                        <span class="font-medium text-gray-600">Date Of Birth:</span>
+                        <span class="text-gray-900" th:text="${student.dob}"></span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                        <span class="font-medium text-gray-600">Email:</span>
+                        <span class="text-gray-900 break-all pl-4 text-right" th:text="${student.email}"></span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                        <span class="font-medium text-gray-600">Mobile:</span>
+                        <span class="text-gray-900" th:text="${student.mobile}"></span>
+                    </div>
+
+                    <div class="flex justify-between border-b border-gray-200 pb-2">
+                        <span class="font-medium text-gray-600">Identity Number:</span>
+                        <span class="text-gray-900" th:text="${student.aadhar}"></span>
+                    </div>
+
+                    <div class="flex flex-col pt-1">
+                        <span class="font-medium text-gray-600 mb-1">Address:</span>
+                        <span class="text-gray-900 text-sm bg-white p-2 rounded border border-gray-100" th:text="${student.address}"></span>
+                    </div>
+
+                </div>
+
+                <div class="mt-6">
+                    <a href="/" class="block text-center bg-blue-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-800 transition shadow-md">
+                        Go Back to Home
+                    </a>
+                </div>
+
+            </div>
+            
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+
+</html>

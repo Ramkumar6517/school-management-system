@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+   
+    <style>
+        @keyframes scroll {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .animate-scroll {
+            display: inline-flex;
+            animation: scroll 25s linear infinite;
+            width: max-content;
+            white-space: nowrap;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+    <div th:replace="~{fragments/latestNews :: latestNews}"></div>
+
+    <!-- HEADER -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <!-- NAVBAR -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- HERO SECTION -->
+    <section class="relative" th:if="${hero != null}">
+
+        <div class="relative w-full h-[250px] sm:h-[350px] md:h-[500px] lg:h-[600px] overflow-hidden">
+
+            <div id="heroSlider" class="w-full h-full">
+
+                <img th:each="img, stat : ${#strings.arraySplit(hero.images, ',')}" th:src="@{'/images/' + ${img}}"
+                    class="slider-image w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-1000"
+                    th:classappend="${stat.index == 0} ? 'opacity-100' : 'opacity-0'">
+
+            </div>
+
+            <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-white">
+
+                <h1 class="text-2xl sm:text-3xl md:text-6xl font-bold text-center" th:text="${hero.heading}">
+                </h1>
+
+                <p class="mt-4 text-lg md:text-xl text-center" th:text="${hero.subHeading}">
+                </p>
+
+                <a th:href="@{/register}" class="mt-6 bg-yellow-500 text-black px-6 py-3 rounded-lg">
+                    Apply Now
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- AJAX CONTENT AREA -->
+    <div id="content"></div>
+
+
+    <!-- FEATURES -->
+    <section class="py-16">
+
+        <div class="container mx-auto px-4">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <div class="shadow-lg p-6 rounded-lg bg-white">
+                    <h3 class="text-xl font-bold">Student Management</h3>
+                    <p class="mt-3">Complete student information management.</p>
+                </div>
+
+                <div class="shadow-lg p-6 rounded-lg bg-white">
+                    <h3 class="text-xl font-bold">Attendance Tracking</h3>
+                    <p class="mt-3">Smart attendance management system.</p>
+                </div>
+
+                <div class="shadow-lg p-6 rounded-lg bg-white">
+                    <h3 class="text-xl font-bold">Result Management</h3>
+                    <p class="mt-3">Fast and secure examination results.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+    <div th:replace="~{fragments/contact :: contact}"></div>
+
+    <!-- FOOTER -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <!-- SLIDER SCRIPT -->
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            /* =========================
+               SLIDER (UNCHANGED)
+            ========================== */
+
+            let slides = document.querySelectorAll(".slider-image");
+            let index = 0;
+
+            if (slides.length > 0) {
+
+                setInterval(() => {
+
+                    slides[index].classList.remove("opacity-100");
+                    slides[index].classList.add("opacity-0");
+
+                    index++;
+
+                    if (index >= slides.length) {
+                        index = 0;
+                    }
+
+                    slides[index].classList.remove("opacity-0");
+                    slides[index].classList.add("opacity-100");
+
+                }, 3000);
+
+            }
+
+
+            /* =========================
+               MOBILE MENU (SAFE FIX)
+            ========================== */
+
+            const menuBtn = document.getElementById("menuBtn");
+            const mobileMenu = document.getElementById("mobileMenu");
+
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener("click", function () {
+                    mobileMenu.classList.toggle("hidden");
+                });
+            }
+
+
+            /* =========================
+               ABOUT AJAX (SAFE FIX)
+            ========================== */
+
+            function loadAbout(e) {
+                e.preventDefault();
+
+                fetch("/about")
+                    .then(res => res.text())
+                    .then(data => {
+
+                        const content = document.getElementById("content");
+
+                        if (content) {
+                            content.innerHTML = data;
+                        }
+
+                        window.scrollTo({
+                            top: 0,
+                            behavior: "smooth"
+                        });
+
+                    })
+                    .catch(err => console.log("Error loading about:", err));
+            }
+
+
+            const aboutLink = document.getElementById("aboutLink");
+            if (aboutLink) {
+                aboutLink.addEventListener("click", loadAbout);
+            }
+
+            const aboutLinkMobile = document.getElementById("aboutLinkMobile");
+            if (aboutLinkMobile) {
+                aboutLinkMobile.addEventListener("click", loadAbout);
+            }
+
+
+            /* =========================
+               CONTACT FORM (FIXED - NO CRASH)
+            ========================== */
+
+            const form = document.getElementById("contactForm");
+
+            if (form) {
+
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    const nameEl = document.getElementById("name");
+                    const emailEl = document.getElementById("email");
+                    const messageEl = document.getElementById("message");
+
+                    const data = {
+                        name: nameEl ? nameEl.value : "",
+                        email: emailEl ? emailEl.value : "",
+                        message: messageEl ? messageEl.value : ""
+                    };
+
+                    fetch("/api/contact/send", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            alert(data.message);
+                            form.reset();
+                        })
+                        .catch(err => console.log(err));
+                });
+
+            }
+
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            window.toggleMainMenu = function () {
+                const mobileMenu = document.getElementById("mobileMenu");
+                const authMenu = document.getElementById("authMenu");
+
+                if (!mobileMenu || !authMenu) return;
+
+                mobileMenu.classList.toggle("hidden");
+                authMenu.classList.add("hidden");
+            };
+
+            window.toggleAuthMenu = function () {
+                const mobileMenu = document.getElementById("mobileMenu");
+                const authMenu = document.getElementById("authMenu");
+
+                if (!mobileMenu || !authMenu) return;
+
+                authMenu.classList.toggle("hidden");
+                mobileMenu.classList.add("hidden");
+            };
+
+        });
+    </script>
+
+
+
+</body>
+
+</html>

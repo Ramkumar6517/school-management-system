@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Administrator Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col justify-between">
+    
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="flex-grow flex items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+        <div class="bg-white shadow-2xl rounded-xl p-6 sm:p-8 w-full max-w-md transition-all duration-300">
+
+            <div class="text-center mb-6">
+                <i class="fa-solid fa-user-shield text-blue-900 text-4xl sm:text-5xl"></i>
+                <h1 class="text-xl sm:text-2xl font-bold text-blue-900 mt-3">
+                    Administrator Login
+                </h1>
+                <p class="text-sm sm:text-base text-gray-500 mt-1">
+                    Secure Login with OTP Verification
+                </p>
+            </div>
+
+            <div id="loginBox" class="space-y-4">
+                <input id="username" type="text" placeholder="Enter Username" 
+                       class="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm sm:text-base">
+                
+                <input id="password" type="password" placeholder="Enter Password" 
+                       class="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm sm:text-base">
+                
+                <button onclick="loginAdmin()" 
+                        class="w-full bg-blue-900 hover:bg-blue-800 text-white p-3 rounded-lg font-semibold transition-colors text-sm sm:text-base shadow-md">
+                    Login & Send OTP
+                </button>
+                
+                <a href="/Administrator/forgot-password" 
+                   class="block text-center mt-4 text-sm text-blue-700 hover:underline">
+                    Forgot Password?
+                </a>
+            </div>
+
+            <div id="otpBox" style="display:none;" class="space-y-4">
+                <input id="otp" type="text" placeholder="Enter OTP" 
+                       class="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 text-sm sm:text-base">
+                
+                <button onclick="verifyOtp()" 
+                        class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg font-semibold transition-colors text-sm sm:text-base shadow-md">
+                    Verify OTP
+                </button>
+            </div>
+
+            <p id="msg" class="text-center mt-4 text-xs sm:text-sm font-bold min-h-[20px]"></p>
+
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+        function loginAdmin() {
+            let msg = document.getElementById("msg");
+            msg.className = "text-center mt-4 text-xs sm:text-sm font-bold text-blue-900";
+            msg.innerHTML = "Checking username and password...";
+
+            let data = {
+                username: document.getElementById("username").value,
+                password: document.getElementById("password").value
+            };
+
+            fetch("/Administrator/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.text())
+            .then(result => {
+                if (result == "success") {
+                    msg.className = "text-center mt-4 text-xs sm:text-sm font-bold text-green-600";
+                    msg.innerHTML = "✔ Login successful. OTP is being sent to your email...";
+                    setTimeout(() => {
+                        document.getElementById("loginBox").style.display = "none";
+                        document.getElementById("otpBox").style.display = "block";
+                        msg.innerHTML = "✔ OTP sent. Please enter your OTP.";
+                    }, 1500);
+                } else {
+                    msg.className = "text-center mt-4 text-xs sm:text-sm font-bold text-red-600";
+                    msg.innerHTML = "❌ Invalid Username or Password";
+                }
+            })
+            .catch(error => {
+                msg.className = "text-center mt-4 text-xs sm:text-sm font-bold text-red-600";
+                msg.innerHTML = "❌ Server error. Please try again.";
+            });
+        }
+
+        function verifyOtp() {
+            let otp = document.getElementById("otp").value;
+            let msg = document.getElementById("msg");
+            msg.className = "text-center mt-4 text-xs sm:text-sm font-bold text-blue-900";
+            msg.innerHTML = "Verifying OTP...";
+
+            // Fixed the "th:fetch" typo here to plain "fetch"
+            fetch("/Administrator/verify", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ otp: otp })
+            })
+            .then(res => res.text())
+            .then(result => {
+                if (result == "success") {
+                    msg.className = "text-center mt-4 text-xs sm:text-sm font-bold text-green-600";
+                    msg.innerHTML = "✔ OTP verified. Opening dashboard...";
+                    setTimeout(() => {
+                        window.location = "/dashboard";
+                    }, 1000);
+                } else {
+                    msg.className = "text-center mt-4 text-xs sm:text-sm font-bold text-red-600";
+                    msg.innerHTML = "❌ Wrong OTP";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

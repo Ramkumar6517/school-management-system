@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="latestNews">
+
+    <!-- NEWS TICKER -->
+    <div class="w-full bg-red-600 text-white overflow-hidden">
+
+        <div class="flex whitespace-nowrap animate-scroll px-4 py-2">
+
+            <span class="font-bold mr-6">🔥 Latest News:</span>
+
+            <!-- If news exists -->
+            <div th:if="${newsList != null and !#lists.isEmpty(newsList)}"
+                 class="flex items-center">
+
+                <span th:each="n : ${newsList}" class="mr-10 flex items-center">
+
+                    <span class="w-2 h-2 bg-yellow-300 rounded-full mr-2 animate-pulse"></span>
+
+                    <!-- News message -->
+                    <span class="text-sm md:text-base mr-2"
+                          th:text="${n.message}">
+                    </span>
+
+                    <!-- Date (SAFE for String) -->
+                    <span class="text-xs text-gray-200"
+                          th:if="${n.date != null}"
+                          th:text="${n.date}">
+                    </span>
+
+                </span>
+
+            </div>
+
+            <!-- If no news -->
+            <div th:if="${newsList == null or #lists.isEmpty(newsList)}"
+                 class="text-gray-200 ml-4">
+                No news available
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</html>

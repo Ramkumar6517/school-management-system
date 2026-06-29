@@ -1,0 +1,378 @@
+
+<nav th:fragment="navbar" class="bg-blue-900 text-white shadow-lg">
+
+    <div class="container mx-auto px-4 max-w-full">
+
+        <div class="flex justify-around items-center min-h-16 gap-4">
+
+
+            <!-- LOGO -->
+
+            <a th:href="@{/}" class="text-xl sm:text-2xl lg:text-3xl font-bold flex items-center gap-2">
+
+                <i class="fa-solid fa-school"></i>
+
+                SCM
+
+            </a>
+            <!-- DESKTOP MENU -->
+
+            <ul class="hidden lg:flex items-center gap-3 xl:gap-6 font-medium text-sm xl:text-base">
+
+
+                <li>
+
+                    <a th:href="@{/}" class="hover:text-yellow-400 flex items-center gap-1">
+
+                        <i class="fa-solid fa-house"></i>
+
+                        Home
+
+                    </a>
+
+                </li>
+                <li>
+
+                    <a href="#" id="aboutLink" class="hover:text-yellow-400 flex items-center gap-1">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        About
+
+                    </a>
+
+                </li>
+                <li>
+
+                    <a th:href="@{/admissions}" class="hover:text-yellow-400 flex items-center gap-1">
+
+
+                        <i class="fa-solid fa-user-plus"></i>
+
+                        Admissions
+
+
+                    </a>
+
+
+                </li>
+                <li>
+
+                    <a th:href="@{/academics}" class="hover:text-yellow-400 flex items-center gap-1">
+
+
+                        <i class="fa-solid fa-book-open"></i>
+
+                        Academics
+
+
+                    </a>
+
+
+                </li>
+                <!-- GALLERY DROPDOWN -->
+
+
+                <li class="relative group">
+
+
+                    <a href="#" class="hover:text-yellow-400 flex items-center gap-1">
+
+                        <i class="fa-solid fa-images"></i>
+
+                        Gallery ▼
+
+                    </a>
+
+
+                    <div class="absolute left-0 top-full hidden group-hover:block
+                bg-white text-black rounded-lg shadow-lg
+                min-w-[160px] z-50">
+
+
+                        <a th:href="@{/gallery}" class="block px-4 py-2 hover:bg-gray-100">
+
+                            <i class="fa-solid fa-image"></i>
+                            Gallery
+
+                        </a>
+
+
+                        <a th:href="@{/sports}" class="block px-4 py-2 hover:bg-gray-100">
+
+                            <i class="fa-solid fa-futbol"></i>
+                            Sports
+
+                        </a>
+
+
+                        <a th:href="@{/events}" class="block px-4 py-2 hover:bg-gray-100">
+
+                            <i class="fa-solid fa-calendar"></i>
+                            Events
+
+                        </a>
+
+
+                    </div>
+
+
+                </li>
+                <li>
+
+                    <a href="javascript:void(0)" onclick="loadContact()" class="flex items-center gap-1">
+
+
+                        <i class="fa-solid fa-phone"></i>
+
+                        Contact
+
+
+                    </a>
+
+
+                </li>
+
+
+
+            </ul>
+
+            <!-- DESKTOP BUTTONS -->
+
+
+            <div class="hidden lg:flex items-center gap-2">
+                <!-- STUDENT -->
+
+                <div class="relative group">
+
+
+                    <button class="bg-yellow-500 text-black px-3 py-2 xl:px-4 rounded-lg flex items-center gap-1">
+
+
+                        <i class="fa-solid fa-user-graduate"></i>
+
+                        Student ▼
+
+
+                    </button>
+                    <div class="absolute left-0 top-10 hidden group-hover:block
+bg-white text-black rounded-lg shadow-lg
+min-w-[180px] z-50">
+
+
+                        <a th:href="@{/login}" class="block px-4 py-2 hover:bg-gray-100">
+
+
+                            <i class="fa-solid fa-right-to-bracket"></i>
+
+                            Student Login
+
+
+                        </a>
+                        <a th:href="@{/register}" class="block px-4 py-2 hover:bg-gray-100">
+
+
+                            <i class="fa-solid fa-user-plus"></i>
+
+                            Student Register
+
+
+                        </a>
+
+
+
+                    </div>
+
+
+
+                </div>
+                <!-- TEACHER -->
+
+
+                <div class="relative group">
+
+
+                    <button class="bg-yellow-500 text-black px-3 py-2 xl:px-4 rounded-lg flex items-center gap-1">
+
+
+                        <i class="fa-solid fa-chalkboard-user"></i>
+
+                        Teacher ▼
+
+
+                    </button>
+                    <div class="absolute left-0 top-10  hidden group-hover:block
+bg-white text-black rounded-lg shadow-lg
+min-w-[180px] z-50">
+
+
+
+                        <a th:href="@{/teacher/login}" class="block px-4 py-2 hover:bg-gray-100">
+
+
+                            <i class="fa-solid fa-right-to-bracket"></i>
+
+                            Teacher Login
+
+
+                        </a>
+
+
+
+                    </div>
+
+
+
+                </div>
+                <!-- ADMIN -->
+
+
+                <div class="relative group">
+
+
+                    <button class="bg-yellow-500 text-black px-3 py-2 xl:px-4 rounded-lg flex items-center gap-1">
+
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                        Admin ▼
+
+
+                    </button>
+                    <div class="absolute left-0 top-10  hidden group-hover:block
+bg-white text-black rounded-lg shadow-lg
+min-w-[180px] z-50">
+
+
+
+                        <a th:href="@{/admin-controller}" class="block px-4 py-2 hover:bg-gray-100">
+
+
+                            <i class="fa-solid fa-users-gear"></i>
+
+                            Admin Counsellor
+
+
+                        </a>
+
+<!--                         
+                        <a th:href="@{/admin-main}" class="block px-4 py-2 hover:bg-gray-100">
+
+
+                            <i class="fa-solid fa-user-tie"></i>
+
+                            Admin
+
+                        </a> -->
+                    </div>
+                </div>
+            </div>
+            <!-- MOBILE BUTTONS -->
+
+
+            <div class="lg:hidden flex items-center gap-4">
+
+
+                <button onclick="toggleMainMenu()" class="text-3xl">
+
+
+                    <i class="fa-solid fa-bars"></i>
+
+
+                </button>
+                <button onclick="toggleAuthMenu()" class="text-2xl">
+
+                    <i class="fa-solid fa-user-lock"></i>
+
+                </button>
+
+
+
+            </div>
+
+
+
+        </div>
+
+        <!-- MOBILE MENU -->
+
+        <div id="mobileMenu" class="hidden lg:hidden pb-4 mt-2">
+            <div class="flex flex-col gap-3 text-sm sm:text-base">
+                <a th:href="@{/}" class="flex items-center gap-2">
+
+                    <i class="fa-solid fa-house"></i>
+                    Home
+
+                </a>
+
+                <a href="#" id="aboutLinkMobile" class="flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info"></i>
+                    About
+
+                </a>
+
+                <a th:href="@{/admissions}" class="flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Admissions
+                </a>
+                <a th:href="@{/academics}" class="flex items-center gap-2">
+                    <i class="fa-solid fa-book-open"></i>
+                    Academics
+                </a>
+                <!-- MOBILE GALLERY -->
+                <div>
+                    <p class="text-yellow-400 font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-images"></i>
+                        Gallery
+                    </p>
+                    <div class="ml-5 flex flex-col gap-2 mt-2">
+                        <a th:href="@{/gallery}">
+                            <i class="fa-solid fa-image"></i>
+                            Gallery
+                        </a>
+                        <a th:href="@{/sports}">
+                            <i class="fa-solid fa-futbol"></i>
+                            Sports
+                        </a>
+                        <a th:href="@{/events}">
+                            <i class="fa-solid fa-calendar"></i>
+                            Events
+                        </a>
+                    </div>
+                </div>
+                <a href="javascript:void(0)" onclick="loadContact()" class="flex items-center gap-2">
+                    <i class="fa-solid fa-phone"></i>
+                    Contact
+                </a>
+            </div>
+
+        </div>
+
+        <!-- MOBILE AUTH -->
+        <div id="authMenu" class="hidden lg:hidden pb-4">
+            <div class="flex flex-col gap-3">
+                <a th:href="@{/login}"
+                    class="bg-yellow-500 text-black p-2 rounded flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    Student Login
+                </a>
+                <a th:href="@{/register}"
+                    class="bg-yellow-500 text-black p-2 rounded flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Student Register
+                </a>
+                <a th:href="@{/teacher/login}"
+                    class="bg-yellow-500 text-black p-2 rounded flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    Teacher Login
+                </a>
+               
+                <a th:href="@{/admin-controller}"
+                    class="bg-yellow-500 text-black p-2 rounded flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-users-gear"></i>
+                    Admin Counsellor
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>

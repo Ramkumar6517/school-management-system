@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<div th:fragment="noticeList">
+
+
+<div id="noticeContainer"
+     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+
+    <div th:each="n : ${notices}"
+
+         class="bg-white shadow-md rounded-xl p-5 border
+                hover:shadow-lg transition">
+
+
+        <h3 class="text-lg font-bold text-blue-900 mb-2"
+            th:text="${n.title}">
+        </h3>
+
+
+        <p class="text-gray-700 mb-3"
+           th:text="${n.message}">
+        </p>
+
+
+
+        <div class="text-sm text-gray-600">
+
+
+            <p>
+                👤 From:
+                <span class="font-semibold"
+                      th:text="${n.sender}">
+                </span>
+            </p>
+
+
+
+            <p>
+                🏫 Class:
+
+                <span class="font-semibold"
+                th:text="${n.targetClass != null 
+                ? n.targetClass 
+                : 'All Classes'}">
+                </span>
+
+            </p>
+
+
+        </div>
+
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+function loadNotices(){
+
+fetch("/teacher/ajax-notices")
+
+.then(res=>res.text())
+
+.then(data=>{
+
+document
+.getElementById("noticeContainer")
+.innerHTML=data;
+
+})
+
+}
+
+
+// auto refresh every 10 seconds
+
+
+
+</script>
+
+
+
+</div>
+
+
+</html>

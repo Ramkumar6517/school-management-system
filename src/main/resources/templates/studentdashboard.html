@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 flex min-h-screen relative">
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar" class="w-64 bg-blue-900 text-white flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-300 ease-in-out z-50">
+        
+        <div class="flex justify-end p-2 md:hidden">
+            <button onclick="toggleSidebar()" class="text-white hover:text-gray-300 focus:outline-none">
+                <i class="fas fa-times fa-lg"></i>
+            </button>
+        </div>
+
+        <div class="p-5 border-b border-blue-700">
+            <div class="flex items-center space-x-3">
+                <img th:if="${student != null}" th:src="@{'/uploads/' + ${student.photoPath}}"
+                    class="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-white object-cover">
+                <img th:if="${student == null}" src="/uploads/default.png"
+                    class="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-white object-cover">
+                <div>
+                    <div class="text-sm">Welcome</div>
+                    <div class="font-bold text-lg" th:if="${student != null}" th:text="${student.studentName}">Student</div>
+                    <div class="font-bold text-lg" th:if="${student == null}">Student</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <a th:href="@{/student/dashboard}" class="block py-2 px-3 rounded hover:bg-blue-700 transition">
+                <i class="fas fa-home w-6 text-center mr-2"></i> Dashboard
+            </a>
+            <a th:href="@{/student/profile}" class="block py-2 px-3 rounded hover:bg-blue-700 transition">
+                <i class="fas fa-user w-6 text-center mr-2"></i> My Profile
+            </a>
+            <a href="#notices-section" class="block py-2 px-3 rounded hover:bg-blue-700 transition">
+                <i class="fas fa-bullhorn w-6 text-center mr-2"></i> Notice
+            </a>
+            <a th:href="@{/student/attendance}" class="block py-2 px-3 rounded hover:bg-blue-700 transition">
+                <i class="fas fa-chart-bar w-6 text-center mr-2"></i> Attendance
+            </a>
+            
+            <a th:if="${resultDeclared}" th:href="@{/student/results}" class="block py-2 px-3 rounded hover:bg-blue-700 transition">
+                <i class="fas fa-file-alt w-6 text-center mr-2"></i> Results
+            </a>
+            
+            <a th:href="@{/student/assignments}" class="block py-2 px-3 rounded hover:bg-blue-700 transition">
+                <i class="fas fa-book w-6 text-center mr-2"></i> Assignments
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-blue-700">
+            <a th:href="@{/student/change-password}" class="block py-2 px-3 bg-green-600 rounded text-center mb-2 hover:bg-green-700 transition">
+                <i class="fas fa-key mr-2"></i> Change Password
+            </a>
+            <a th:href="@{/logout}" class="block py-2 px-3 bg-red-600 rounded text-center hover:bg-red-700 transition">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="flex-1 flex flex-col h-screen overflow-y-auto w-full">
+        
+        <div class="bg-white shadow px-5 py-4 flex items-center justify-between md:justify-start">
+            <button onclick="toggleSidebar()" class="text-blue-900 focus:outline-none md:hidden mr-4">
+                <i class="fas fa-bars fa-lg"></i>
+            </button>
+            <h2 class="text-xl font-bold text-blue-900">Student Dashboard</h2>
+        </div>
+
+        <main class="p-4 md:p-6 flex-1">
+            <div class="bg-white shadow rounded-xl p-4 md:p-6 mb-6">
+                <h1 class="text-xl md:text-2xl font-bold text-blue-900">
+                    Welcome to Your Dashboard <i class="fas fa-graduation-cap ml-2 text-blue-600"></i>
+                </h1>
+                <p class="text-gray-600 mt-2 text-sm md:text-base">
+                    Track attendance, results, assignments, and notices in one place.
+                </p>
+
+                <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-blue-100 p-5 rounded shadow-sm border border-blue-200">
+                        <h3 class="font-bold text-blue-800"><i class="fas fa-id-card mr-2"></i> Student ID</h3>
+                        <p class="mt-1 font-medium text-gray-700" th:text="${student.studentId}">---</p>
+                    </div>
+                    <div class="bg-green-100 p-5 rounded shadow-sm border border-green-200">
+                        <h3 class="font-bold text-green-800"><i class="fas fa-chalkboard-teacher mr-2"></i> Class</h3>
+                        <p class="mt-1 font-medium text-gray-700" th:text="${student.className}">---</p>
+                    </div>
+                    <div class="bg-yellow-100 p-5 rounded shadow-sm border border-yellow-200">
+                        <h3 class="font-bold text-yellow-800"><i class="fas fa-file-signature mr-2"></i> Application ID</h3>
+                        <p class="mt-1 font-medium text-gray-700" th:text="${student.applicationId}">---</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notices-section" class="bg-white shadow rounded-xl p-4 md:p-6">
+                <h2 class="text-lg md:text-xl font-bold text-blue-900 border-b pb-2 mb-4">
+                    <i class="fas fa-bullhorn mr-2"></i> Recent Notices
+                </h2>
+                
+                <button onclick="loadNotices()" class="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition text-sm md:text-base">
+                    <i class="fas fa-sync-alt mr-1"></i> Load Latest Notices
+                </button>
+
+                <div id="ajax-notices-container" class="min-h-[100px]">
+                    <div th:replace="~{fragments/notice-list :: noticeList}"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function loadNotices() {
+            const container = document.getElementById('ajax-notices-container');
+            container.innerHTML = '<div class="text-center text-gray-500 py-4"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading notices...</p></div>';
+
+            fetch('/api/notices')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.text();
+                })
+                .then(htmlData => {
+                    container.innerHTML = htmlData;
+                })
+                .catch(error => {
+                    console.error('Error fetching notices:', error);
+                    container.innerHTML = '<div class="text-red-500 py-4"><i class="fas fa-exclamation-triangle mr-2"></i> Failed to load notices. Please try again later.</div>';
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="max-w-4xl mx-auto mt-6 sm:mt-10 bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+
+        <!-- TITLE -->
+        <h2 class="text-xl sm:text-2xl font-bold mb-6 text-center text-blue-700">
+            📰 News Management
+        </h2>
+
+        <!-- ================= ADD NEWS ================= -->
+        <form id="newsForm" class="space-y-3 sm:space-y-4">
+
+            <input type="text" id="message" placeholder="Enter news"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400" />
+
+            <input type="text" id="date" placeholder="Enter date (DD/MM/YYYY)"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400" />
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
+                ➕ Add News
+            </button>
+
+        </form>
+
+        <!-- ================= NEWS LIST ================= -->
+        <div class="mt-8">
+
+            <h3 class="text-lg sm:text-xl font-bold mb-3">📋 Existing News</h3>
+
+            <div id="newsList" class="space-y-2">
+
+                <div th:each="n : ${newsList}"
+                    class="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-100 p-3 rounded">
+
+                    <div>
+                        <p class="font-semibold" th:text="${n.message}"></p>
+                        <p class="text-xs text-gray-500" th:text="${n.date}"></p>
+                    </div>
+
+                    <button th:attr="data-id=${n.id}"
+                        class="deleteBtn mt-2 sm:mt-0 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ================= ADD NEWS =================
+    document.getElementById("newsForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        let data = {
+            message: document.getElementById("message").value,
+            date: document.getElementById("date").value
+        };
+
+        fetch("/save/news", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(news => {
+
+            addNewsToUI(news);
+
+            document.getElementById("message").value = "";
+            document.getElementById("date").value = "";
+        });
+    });
+
+    // ================= DELETE NEWS =================
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("deleteBtn")) {
+
+            let id = e.target.getAttribute("data-id");
+
+            fetch("/delete/news/" + id, {
+                method: "POST"
+            })
+            .then(() => {
+                e.target.parentElement.remove();
+            });
+        }
+    });
+
+    // ================= ADD TO UI =================
+    function addNewsToUI(news) {
+
+        let div = document.createElement("div");
+        div.className = "flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-100 p-3 rounded";
+
+        div.innerHTML = `
+            <div>
+                <p class="font-semibold">${news.message}</p>
+                <p class="text-xs text-gray-500">${news.date}</p>
+            </div>
+
+            <button data-id="${news.id}"
+                class="deleteBtn mt-2 sm:mt-0 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                Delete
+            </button>
+        `;
+
+        document.getElementById("newsList").prepend(div);
+    }
+
+});
+</script>
+
+</body>
+</html>

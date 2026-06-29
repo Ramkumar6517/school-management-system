@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ID List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-4 sm:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        
+        <h2 class="text-xl sm:text-2xl font-bold mb-5 text-gray-800">Student ID Generated</h2>
+        
+        <div th:replace="~{fragments/search :: studentSearch}"></div>
+
+        <div class="w-full bg-white shadow rounded-lg overflow-hidden border border-gray-200">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+
+                    <thead class="bg-blue-900 text-white text-sm sm:text-base">
+                        <tr>
+                            <th class="p-3 sm:p-4 font-semibold">ID</th>
+                            <th class="p-3 sm:p-4 font-semibold">Name</th>
+                            <th class="p-3 sm:p-4 font-semibold">Father's Name</th>
+                            <th class="p-3 sm:p-4 font-semibold">Class</th>
+                            <th class="p-3 sm:p-4 font-semibold">Email</th>
+                            <th class="p-3 sm:p-4 font-semibold">Mobile</th>
+                            <th class="p-3 sm:p-4 font-semibold">Application No</th>
+                            <th class="p-3 sm:p-4 font-semibold">Student Unique ID</th>
+                            <th class="p-3 sm:p-4 font-semibold text-center">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-200 text-sm sm:text-base text-gray-700">
+                        <tr th:each="student : ${students}" class="hover:bg-gray-50 transition-colors">
+
+                            <td class="p-3 sm:p-4" th:text="${student.id}"></td>
+                            <td class="p-3 sm:p-4 font-medium text-gray-900" th:text="${student.studentName}"></td>
+                            <td class="p-3 sm:p-4" th:text="${student.fatherName}"></td>
+                            <td class="p-3 sm:p-4" th:text="${student.className}"></td>
+                            <td class="p-3 sm:p-4" th:text="${student.email}"></td>
+                            <td class="p-3 sm:p-4" th:text="${student.mobile}"></td>
+                            <td class="p-3 sm:p-4" th:text="${student.applicationId}"></td>
+
+                            <td class="p-3 sm:p-4">
+                                <span th:if="${student.studentId != null}" class="text-green-700 font-bold"
+                                      th:text="${student.studentId}">
+                                </span>
+                                <span th:if="${student.studentId == null}" class="text-red-500 font-medium">
+                                    Not Generated
+                                </span>
+                            </td>
+
+                            <td class="p-3 sm:p-4 text-center">
+                                <button th:if="${student.status == 'APPROVED' && student.studentId == null}"
+                                        th:attr="onclick='generateId(' + ${student.id} + ')'"
+                                        class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded text-xs sm:text-sm font-medium transition-colors shadow-sm">
+                                    Generate Student ID
+                                </button>
+
+                                <span th:if="${student.status == 'REJECTED'}" class="text-red-600 font-bold">
+                                    Rejected
+                                </span>
+
+                                <span th:if="${student.studentId != null}" class="text-green-700 font-bold">
+                                    Generated
+                                </span>
+                            </td>
+
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function generateId(id) {
+            fetch('/admin/generate-id/' + id)
+                .then(response => {
+                    if (response.ok) {
+                        alert("ID Generated Successfully");
+                        location.reload();
+                    } else {
+                        alert("Something went wrong!");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+
+</body>
+</html>

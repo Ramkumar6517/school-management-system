@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <title>Student Account Control</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="bg-gray-100 min-h-screen">
+
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+
+
+    <div class="flex justify-center p-8">
+
+
+        <div class="bg-white shadow-2xl rounded-xl p-6 w-full max-w-lg">
+
+
+
+            <h1 class="text-2xl font-bold text-center text-blue-900 mb-5">
+
+                Student Account Control
+
+            </h1>
+
+
+
+
+            <!-- SEARCH -->
+
+            <form th:action="@{/student/disable}" method="get">
+
+
+                <input type="text" name="studentId" placeholder="Enter Student ID"
+                    class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500">
+
+
+
+                <button class="w-full mt-3 bg-blue-900 text-white p-3 rounded-lg hover:bg-blue-800">
+
+
+                    Search
+
+
+                </button>
+
+
+            </form>
+
+
+
+
+
+            <!-- NOT FOUND -->
+
+            <p th:if="${student == null and param.studentId != null}" class="text-red-600 text-center mt-4 font-bold">
+
+
+                Student Not Found
+
+
+            </p>
+
+
+
+
+
+
+            <!-- DETAILS -->
+
+
+            <div th:if="${student != null}" class="mt-6">
+
+
+
+                <hr>
+
+
+
+
+                <h2 class="text-xl font-bold text-center mt-4">
+
+                    Student Details
+
+                </h2>
+
+
+
+
+
+                <!-- PHOTO -->
+
+
+                <div class="flex justify-center mt-4">
+
+
+                    <img th:if="${student.photoPath != null}" th:src="@{'/uploads/'+${student.photoPath}}"
+                        class="w-28 h-28 rounded-full border-4 border-blue-900 object-cover">
+
+
+                </div>
+
+
+
+
+
+
+                <div class="space-y-3 mt-5 text-sm">
+
+
+
+                    <p>
+                        <b>Student ID:</b>
+
+                        <span th:text="${student.studentId}"></span>
+
+                    </p>
+
+
+
+                    <p>
+                        <b>Name:</b>
+
+                        <span th:text="${student.studentName}"></span>
+
+                    </p>
+
+
+
+                    <p>
+                        <b>Father Name:</b>
+
+                        <span th:text="${student.fatherName}"></span>
+
+                    </p>
+
+
+
+
+                    <p>
+                        <b>Gender:</b>
+
+                        <span th:text="${student.gender}"></span>
+
+                    </p>
+
+
+
+                    <p>
+                        <b>Email:</b>
+
+                        <span th:text="${student.email}"></span>
+
+                    </p>
+
+
+
+                    <p>
+                        <b>Mobile:</b>
+
+                        <span th:text="${student.mobile}"></span>
+
+                    </p>
+
+
+
+
+                    <p>
+                        <b>Class:</b>
+
+                        <span th:text="${student.className}"></span>
+
+                    </p>
+
+
+
+                    <p>
+                        <b>DOB:</b>
+
+                        <span th:text="${student.dob}"></span>
+
+                    </p>
+
+
+
+
+                    <p>
+                        <b>Address:</b>
+
+                        <span th:text="${student.address}"></span>
+
+                    </p>
+
+
+
+
+
+                    <!-- ENABLE STATUS -->
+
+
+                    <p>
+
+                        <b>Account:</b>
+
+
+                        <span th:if="${student.enabled}" class="text-green-600 font-bold">
+
+                            ACTIVE
+
+                        </span>
+
+
+
+                        <span th:unless="${student.enabled}" class="text-red-600 font-bold">
+
+                            DISABLED
+
+                        </span>
+
+
+                    </p>
+
+
+
+
+
+
+                    <!-- LOCK STATUS -->
+
+
+                    <p>
+
+                        <b>Login Lock:</b>
+
+
+                        <span th:if="${student.locked}" class="text-red-600 font-bold">
+
+
+                            LOCKED
+
+
+                        </span>
+
+
+
+                        <span th:unless="${student.locked}" class="text-green-600 font-bold">
+
+
+                            UNLOCKED
+
+
+                        </span>
+
+
+
+                    </p>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- BUTTONS -->
+
+
+                <div class="flex flex-wrap gap-3 mt-6">
+
+
+
+
+
+                    <!-- ENABLE -->
+
+                    <button th:if="${!student.enabled}" class="bg-green-600 text-white px-4 py-2 rounded"
+                        th:data-id="${student.studentId}" onclick="toggleAccount(this,true)">
+
+
+                        Enable Account
+
+
+                    </button>
+
+
+
+
+
+                    <!-- DISABLE -->
+
+                    <button th:if="${student.enabled}" class="bg-red-600 text-white px-4 py-2 rounded"
+                        th:data-id="${student.studentId}" onclick="toggleAccount(this,false)">
+
+
+                        Disable Account
+
+
+                    </button>
+
+
+
+
+
+
+
+                    <!-- UNLOCK -->
+
+
+                    <button th:if="${student.locked}" class="bg-yellow-500 text-white px-4 py-2 rounded"
+                        th:data-id="${student.studentId}" onclick="unlockAccount(this)">
+
+
+                        Unlock Account
+
+
+                    </button>
+
+
+
+
+
+
+
+                    <!-- LOCK -->
+
+
+                    <button th:unless="${student.locked}" class="bg-purple-600 text-white px-4 py-2 rounded"
+                        th:data-id="${student.studentId}" onclick="lockAccount(this)">
+
+
+                        Lock Account
+
+
+                    </button>
+
+
+
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+    <script>
+
+
+
+        function toggleAccount(btn, status) {
+
+
+            let id = btn.getAttribute("data-id");
+
+
+
+            fetch('/api/admin/toggle', {
+
+
+                method: 'POST',
+
+
+                headers: {
+
+
+                    'Content-Type': 'application/json'
+
+
+                },
+
+
+                body: JSON.stringify({
+
+
+                    studentId: id,
+
+
+                    status: status
+
+
+                })
+
+
+            })
+
+
+                .then(res => res.text())
+
+
+                .then(data => {
+
+
+                    alert(data);
+
+
+                    location.reload();
+
+
+                });
+
+
+        }
+
+
+
+
+
+
+
+        function unlockAccount(btn) {
+
+
+            let id = btn.getAttribute("data-id");
+
+
+
+            fetch('/api/admin/unlock', {
+
+
+                method: 'POST',
+
+
+                headers: {
+
+
+                    'Content-Type': 'application/json'
+
+
+                },
+
+
+                body: JSON.stringify({
+
+
+                    studentId: id
+
+
+                })
+
+
+            })
+
+
+                .then(res => res.text())
+
+
+                .then(data => {
+
+
+                    alert(data);
+
+
+                    location.reload();
+
+
+                });
+
+
+        }
+
+
+
+
+
+
+
+
+        function lockAccount(btn) {
+
+
+            let id = btn.getAttribute("data-id");
+
+
+
+            fetch('/api/admin/lock', {
+
+
+                method: 'POST',
+
+
+                headers: {
+
+
+                    'Content-Type': 'application/json'
+
+
+                },
+
+
+                body: JSON.stringify({
+
+
+                    studentId: id
+
+
+                })
+
+
+            })
+
+
+                .then(res => res.text())
+
+
+                .then(data => {
+
+
+                    alert(data);
+
+
+                    location.reload();
+
+
+                });
+
+
+        }
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>

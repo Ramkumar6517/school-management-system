@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+
+    <title>Teacher Notice</title>
+
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+</head>
+
+
+
+
+<body class="bg-gray-100 min-h-screen p-4">
+
+
+    <div class="max-w-5xl mx-auto">
+
+
+
+
+
+        <!-- SEND -->
+
+        <div class="bg-white shadow-xl rounded-xl p-6">
+
+
+            <h2 class="text-2xl font-bold text-blue-900 text-center mb-5">
+
+                <i class="fa-solid fa-bullhorn"></i>
+
+                Send Notice To Students
+
+            </h2>
+
+
+
+
+            <form id="noticeForm" class="space-y-4">
+
+
+
+                <input name="title" placeholder="Notice title" required class="w-full border p-3 rounded-lg" />
+
+
+
+
+
+                <textarea name="message" placeholder="Notice message" required rows="5"
+                    class="w-full border p-3 rounded-lg">
+
+</textarea>
+
+
+
+
+
+
+                <input name="targetClass" placeholder="Class (10A / 12 / all)" class="w-full border p-3 rounded-lg" />
+
+
+
+
+
+
+
+                <button class="w-full bg-green-600 text-white p-3 rounded-lg font-bold">
+
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                    Send
+
+
+                </button>
+
+
+
+
+            </form>
+
+
+
+            <p id="msg" class="text-center mt-3 font-bold">
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <!-- LIST -->
+
+
+        <div class="mt-8">
+
+
+            <h2 class="text-2xl font-bold text-blue-900 mb-4">
+
+
+                <i class="fa-solid fa-bell"></i>
+
+                My Notices
+
+
+            </h2>
+
+
+
+
+
+            <div id="noticeContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <script>
+
+
+        // SEND AJAX
+
+        document
+            .getElementById("noticeForm")
+            .addEventListener(
+                "submit",
+                function (e) {
+
+
+                    e.preventDefault();
+
+
+                    fetch("/teacher/notices/send", {
+
+                        method: "POST",
+
+                        body: new FormData(this)
+
+                    })
+
+                        .then(() => {
+
+
+                            document
+                                .getElementById("msg")
+                                .innerHTML =
+                                "✅ Notice Sent";
+
+
+                            this.reset();
+
+
+                            loadNotices();
+
+
+                        });
+
+
+                });
+
+
+
+
+
+
+        // LOAD TEACHER NOTICE
+
+
+        function loadNotices() {
+
+
+            fetch("/teacher/notices/list")
+
+
+                .then(res => res.json())
+
+
+                .then(data => {
+
+
+                    let html = "";
+
+
+                    data.forEach(n => {
+
+
+                        html += `
+
+
+<div class="bg-white shadow rounded-xl p-5 flex justify-between">
+
+
+<div>
+
+
+<h3 class="font-bold text-xl">
+
+${n.title}
+
+</h3>
+
+
+<p class="mt-2 text-gray-600">
+
+${n.message}
+
+</p>
+
+
+
+<p class="mt-3">
+
+Class :
+
+<b>
+
+${n.targetClass ?? 'All'}
+
+</b>
+
+</p>
+
+
+
+<p>
+
+From :
+
+<b>
+
+${n.sender}
+
+</b>
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="flex flex-col gap-2">
+
+
+<button
+
+onclick="editNotice(${n.id})"
+
+class="bg-yellow-500 text-white px-3 py-2 rounded">
+
+
+<i class="fa-solid fa-pen"></i>
+
+
+</button>
+
+
+
+
+
+<button
+
+onclick="deleteNotice(${n.id})"
+
+class="bg-red-600 text-white px-3 py-2 rounded">
+
+
+<i class="fa-solid fa-trash"></i>
+
+
+</button>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+`;
+
+
+                    });
+
+
+
+                    document
+                        .getElementById("noticeContainer")
+                        .innerHTML = html;
+
+
+
+                });
+
+
+        }
+
+
+
+
+
+
+
+        // DELETE
+
+
+        function deleteNotice(id) {
+
+
+            if (!confirm("Delete Notice?"))
+
+                return;
+
+
+
+            fetch("/teacher/notices/delete", {
+
+
+                method: "POST",
+
+
+                headers: {
+
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+
+
+                },
+
+
+                body: "id=" + id
+
+
+
+            })
+
+
+                .then(() => {
+
+
+                    alert("Notice Deleted");
+
+
+                    loadNotices();
+
+
+                });
+
+
+        }
+
+
+
+
+
+
+
+
+        // EDIT
+
+
+        function editNotice(id) {
+
+
+
+            let title =
+                prompt("Enter new title");
+
+
+            let message =
+                prompt("Enter new message");
+
+
+
+            if (!title || !message)
+
+                return;
+
+
+
+            fetch("/teacher/notices/update", {
+
+
+                method: "POST",
+
+
+                headers: {
+
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+
+                },
+
+
+                body:
+
+                    "id=" + id +
+                    "&title=" + encodeURIComponent(title) +
+                    "&message=" + encodeURIComponent(message)
+
+
+
+            })
+
+
+                .then(() => {
+
+
+                    alert("Notice Updated");
+
+
+                    loadNotices();
+
+
+
+                });
+
+
+        }
+
+
+
+
+
+
+
+        loadNotices();
+
+
+
+    </script>
+
+
+</body>
+
+</html>

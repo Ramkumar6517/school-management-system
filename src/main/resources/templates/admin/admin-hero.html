@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<title>Edit Hero</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="p-10">
+
+
+<h2 class="text-2xl font-bold mb-5">
+Edit Hero Section
+</h2>
+
+
+
+<form th:action="@{/admin/hero/save}"
+      method="post"
+      enctype="multipart/form-data"
+      class="space-y-5">
+
+
+
+<div>
+
+<label class="font-bold">
+Heading
+</label>
+
+
+<input type="text"
+       name="heading"
+       th:value="${hero.heading}"
+       class="border p-2 w-full"/>
+
+
+</div>
+
+
+
+
+
+<div>
+
+<label class="font-bold">
+Sub Heading
+</label>
+
+
+<input type="text"
+       name="subHeading"
+       th:value="${hero.subHeading}"
+       class="border p-2 w-full"/>
+
+
+</div>
+
+
+
+
+
+
+<div>
+
+
+<label class="font-bold">
+Choose 4 Images
+</label>
+
+
+<input type="file"
+       name="images"
+       id="images"
+       multiple
+       accept=".jpg,.jpeg,.avif"
+       onchange="checkImages()"
+       class="border p-2 w-full"/>
+
+
+
+<p id="msg" class="text-red-600"></p>
+
+
+</div>
+
+
+
+
+
+
+<button id="saveBtn"
+        disabled
+        class="bg-blue-600 text-white px-5 py-2 rounded">
+
+
+Save
+
+</button>
+
+
+
+</form>
+
+
+
+
+
+
+<script>
+
+
+function checkImages(){
+
+
+    let files =
+    document.getElementById("images").files;
+
+
+    
+    let msg =
+    document.getElementById("msg");
+
+
+
+    let btn =
+    document.getElementById("saveBtn");
+
+
+
+
+    if(files.length !== 4){
+
+
+        msg.innerHTML =
+        "Please select exactly 4 images";
+
+
+        btn.disabled = true;
+
+
+        return;
+
+    }
+
+
+
+
+    for(let i=0;i<files.length;i++){
+
+
+        let ext =
+        files[i].name.split('.')
+        .pop()
+        .toLowerCase();
+
+
+
+        if(
+            ext !== "jpg" &&
+            ext !== "jpeg" &&
+            ext !== "avif"
+        ){
+
+
+            msg.innerHTML =
+            "Only JPG, JPEG, AVIF allowed";
+
+
+            btn.disabled=true;
+
+
+            return;
+
+        }
+
+
+    }
+
+
+
+
+    msg.innerHTML =
+    "4 images selected";
+
+
+    btn.disabled=false;
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

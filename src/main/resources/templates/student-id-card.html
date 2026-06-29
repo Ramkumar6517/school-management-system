@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ID Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex items-center justify-center px-4 py-8">
+
+        <div class="bg-white shadow-2xl rounded-2xl p-5 sm:p-6 w-full max-w-md">
+
+            <h2 class="text-xl sm:text-2xl font-bold text-center text-blue-900 mb-5">
+                Search Student ID Card
+            </h2>
+
+            <!-- Search Box -->
+            <form th:action="@{/student/showId}" method="get" class="mb-5">
+
+                <input type="text"
+                       name="studentId"
+                       placeholder="Enter Student ID"
+                       class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                <button type="submit"
+                        class="w-full mt-3 bg-blue-900 text-white py-3 rounded-lg hover:bg-blue-800 transition">
+                    Search
+                </button>
+
+            </form>
+
+            <!-- Student Not Found -->
+            <div th:if="${student == null and param.studentId != null}">
+                <p class="text-center text-red-600 font-semibold">
+                    Student ID Not Found
+                </p>
+            </div>
+
+            <!-- Student Card -->
+            <div th:if="${student != null}">
+
+                <hr class="mb-4">
+
+                <h2 class="text-lg sm:text-xl font-bold text-center text-blue-900 mb-4">
+                    Student ID Card
+                </h2>
+
+                <!-- Photo -->
+                <div class="flex justify-center mb-4">
+
+                   <img th:if="${student.photoPath != null}"
+     th:src="@{'/uploads/' + ${student.photoPath}}"
+     class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-blue-900 object-cover"
+     alt="Student Photo">
+
+                </div>
+
+                <!-- Student Details -->
+                <div class="space-y-2 text-sm sm:text-base">
+
+                    <p>
+                        <b>Student ID:</b>
+                        <span class="text-green-600 font-bold"
+                              th:text="${student.studentId}">
+                        </span>
+                    </p>
+
+                    <p>
+                        <b>Application ID:</b>
+                        <span th:text="${student.applicationId}"></span>
+                    </p>
+
+                    <p>
+                        <b>Name:</b>
+                        <span th:text="${student.studentName}"></span>
+                    </p>
+
+                    <p>
+                        <b>Father Name:</b>
+                        <span th:text="${student.fatherName}"></span>
+                    </p>
+                    <p>
+                        <b>Gender:</b>
+                        <span th:text="${student.gender}"></span>
+                    </p>
+
+                    <p>
+                        <b>Email:</b>
+                        <span th:text="${student.email}"></span>
+                    </p>
+
+                    <p>
+                        <b>Mobile:</b>
+                        <span th:text="${student.mobile}"></span>
+                    </p>
+
+                    <p>
+                        <b>Date of Birth:</b>
+                        <span th:text="${student.dob}"></span>
+                    </p>
+
+                    <p>
+                        <b>Class:</b>
+                        <span th:text="${student.className}"></span>
+                    </p>
+
+                    <p>
+                        <b>Aadhaar:</b>
+                        <span th:text="${student.aadhar}"></span>
+                    </p>
+
+                    <p>
+                        <b>Address:</b>
+                        <span th:text="${student.address}"></span>
+                    </p>
+
+                    <p>
+                        <b>Status:</b>
+                        <span class="font-semibold"
+                              th:text="${student.status}">
+                        </span>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+
+</html>

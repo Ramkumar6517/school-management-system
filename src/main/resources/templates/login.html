@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Login</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- Font Awesome -->
+    <div th:replace="~{fragments/fontawesomeCdn :: fontawesome}"></div>
+
+
+</head>
+
+
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+
+
+    <!-- NAVBAR -->
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+
+
+
+
+    <!-- LOGIN SECTION -->
+
+
+    <main class="flex-1 flex items-center justify-center px-4 py-10">
+
+
+        <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
+
+
+
+            <h2 class="text-3xl font-bold text-center text-blue-900 mb-6">
+
+
+                <i class="fa-solid fa-user-graduate"></i>
+
+                Student Login
+
+
+            </h2>
+
+
+
+
+
+            <p th:if="${error}" class="bg-red-100 text-red-700 p-3 rounded mb-4 text-center" th:text="${error}">
+
+            </p>
+
+
+
+
+
+
+            <form th:action="@{/login}" method="post">
+
+
+
+                <div class="mb-4">
+
+
+                    <label class="block font-semibold text-gray-700 mb-2">
+
+                        <i class="fa-solid fa-id-card"></i>
+
+                        Student ID
+
+                    </label>
+
+
+
+                    <input type="text" name="studentId" placeholder="Enter Student ID"
+                        class="w-full border rounded-lg p-3" required>
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="mb-5">
+
+
+                    <label class="block font-semibold text-gray-700 mb-2">
+
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        Password
+
+
+                    </label>
+
+
+
+                    <input type="password" name="password" placeholder="Enter Password"
+                        class="w-full border rounded-lg p-3" required>
+
+
+
+                </div>
+
+
+
+
+
+
+                <button type="submit" class="w-full bg-blue-900 text-white py-3 rounded-lg hover:bg-blue-700">
+
+
+                    <i class="fa-solid fa-right-to-bracket"></i>
+
+
+                    Login
+
+
+                </button>
+
+
+
+
+            </form>
+
+
+
+
+
+
+
+            <!-- FORGOT BUTTON -->
+
+
+            <div class="text-center mt-5">
+
+
+                <button onclick="openForgot()" class="text-blue-700 hover:underline">
+
+
+                    <i class="fa-solid fa-key"></i>
+
+
+                    Forgot Password?
+
+
+                </button>
+
+
+
+            </div>
+
+
+
+
+
+            <div class="text-center mt-5 text-sm text-gray-600">
+
+
+                <p>
+
+                    Default Password : DOB
+
+                </p>
+
+
+                <p>
+
+                    Format : YYYY-MM-DD
+
+                </p>
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+    </main>
+
+
+    <!-- FORGOT PASSWORD MODAL -->
+
+    <div id="forgotModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+
+
+
+
+
+        <div class="bg-white p-6 rounded-xl w-96">
+
+
+
+
+
+            <h2 class="text-xl font-bold mb-4">
+
+
+                <i class="fa-solid fa-unlock"></i>
+
+
+                Reset Password
+
+
+            </h2>
+
+
+
+
+
+
+
+
+            <!-- STUDENT ID -->
+
+
+            <input id="forgotStudentId" type="text" placeholder="Enter Student ID"
+                class="border p-3 w-full rounded mb-3">
+
+
+
+
+
+
+
+            <button onclick="sendReset()" class="bg-blue-900 text-white w-full p-3 rounded mb-3">
+
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+
+                Send OTP
+
+
+            </button>
+
+
+
+
+
+
+
+
+            <!-- OTP -->
+
+
+            <div id="otpSection" class="hidden">
+
+
+                <input id="otp" type="text" placeholder="Enter OTP" class="border p-3 w-full rounded mb-3">
+
+
+
+
+
+                <button onclick="verifyOtp()" class="bg-green-700 text-white w-full p-3 rounded">
+
+
+                    Verify OTP
+
+
+                </button>
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+            <!-- NEW PASSWORD -->
+
+
+            <div id="passwordSection" class="hidden mt-3">
+
+
+
+                <input id="newPassword" type="password" placeholder="Enter New Password"
+                    class="border p-3 w-full rounded mb-3">
+
+
+
+
+
+                <button onclick="resetPassword()" class="bg-blue-900 text-white w-full p-3 rounded">
+
+
+                    Reset Password
+
+
+                </button>
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+            <p id="msg" class="text-center mt-3 text-sm">
+
+
+            </p>
+
+
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- FOOTER -->
+
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+
+
+
+
+
+
+
+
+    <script>
+
+
+        let currentStudentId = "";
+
+
+
+
+
+        function openForgot() {
+
+
+            document.getElementById("forgotModal")
+
+                .classList.remove("hidden");
+
+
+        }
+
+
+
+
+
+
+
+
+
+        function sendReset() {
+
+
+
+            currentStudentId =
+
+                document.getElementById("forgotStudentId").value;
+
+
+
+
+
+
+            fetch("/forgot-password", {
+
+
+                method: "POST",
+
+
+                headers: {
+
+
+                    "Content-Type": "application/json"
+
+
+                },
+
+
+                body: JSON.stringify({
+
+
+                    studentId: currentStudentId
+
+
+                })
+
+
+            })
+
+
+
+                .then(res => res.text())
+
+
+                .then(data => {
+
+
+
+                    document.getElementById("msg").innerHTML = data;
+
+
+
+                    if (data.includes("OTP sent")) {
+
+
+                        document.getElementById("otpSection")
+
+                            .classList.remove("hidden");
+
+
+                    }
+
+
+
+                })
+
+
+
+                .catch(() => {
+
+
+                    document.getElementById("msg").innerHTML =
+
+                        "Something went wrong";
+
+
+                });
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+        function verifyOtp() {
+
+
+
+            let otp =
+
+                document.getElementById("otp").value;
+
+
+
+
+
+            fetch("/verify-otp", {
+
+
+                method: "POST",
+
+
+                headers: {
+
+
+                    "Content-Type": "application/json"
+
+
+                },
+
+
+                body: JSON.stringify({
+
+
+                    studentId: currentStudentId,
+
+
+                    otp: otp
+
+
+                })
+
+
+            })
+
+
+
+                .then(res => res.text())
+
+
+
+                .then(data => {
+
+
+
+                    document.getElementById("msg").innerHTML = data;
+
+
+
+                    if (data.includes("verified")) {
+
+
+                        document.getElementById("passwordSection")
+
+                            .classList.remove("hidden");
+
+
+                    }
+
+
+
+                });
+
+
+        }
+
+function resetPassword() {
+
+
+    let password =
+        document.getElementById("newPassword").value;
+
+
+
+    fetch("/reset-password", {
+
+
+        method: "POST",
+
+
+        headers: {
+
+
+            "Content-Type": "application/json"
+
+
+        },
+
+
+        body: JSON.stringify({
+
+
+            studentId: currentStudentId,
+
+
+            password: password
+
+
+        })
+
+
+    })
+
+
+
+    .then(res => res.text())
+
+
+
+    .then(data => {
+
+
+
+        document.getElementById("msg").innerHTML = data;
+
+
+
+        if(data.includes("Password changed successfully")){
+
+
+            setTimeout(()=>{
+
+
+                // modal close
+
+                document.getElementById("forgotModal")
+                .classList.add("hidden");
+
+
+
+                // clear fields
+
+                document.getElementById("forgotStudentId").value="";
+
+                document.getElementById("otp").value="";
+
+                document.getElementById("newPassword").value="";
+
+
+
+                // hide sections
+
+                document.getElementById("otpSection")
+                .classList.add("hidden");
+
+
+
+                document.getElementById("passwordSection")
+                .classList.add("hidden");
+
+
+
+                document.getElementById("msg").innerHTML="";
+
+
+
+                // login page reload
+
+                window.location.reload();
+
+
+
+            },3000);
+
+
+        }
+
+
+
+    });
+
+
+
+}
+
+
+
+
+    </script>
+
+
+
+
+
+</body>
+
+
+</html>

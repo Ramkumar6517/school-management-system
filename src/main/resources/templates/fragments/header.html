@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<div th:fragment="header">
+
+
+    <header class="bg-blue-950 shadow-md">
+
+
+        <div class="container mx-auto px-4 py-4">
+
+
+            <!-- MAIN WRAPPER -->
+
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-5">
+                <!-- LEFT SECTION -->
+                <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                    <!-- LOGO -->
+                    <img th:if="${header != null && header.logo != null}" th:src="@{'/images/' + ${header.logo}}"
+                        class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover">
+                    <div>
+
+                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-400"
+                            th:text="${header.schoolName}">
+                            School Name
+                        </h1>
+                        <p
+                            class="text-white text-sm sm:text-base flex items-center justify-center sm:justify-start gap-2">
+
+                            <i class="fa-solid fa-building text-yellow-400"></i>
+                            Affiliation:
+                            <span th:text="${header.affiliation}"></span>
+                        </p>
+                        <p
+                            class="text-white text-sm sm:text-base flex items-center justify-center sm:justify-start gap-2">
+                            <i class="fa-solid fa-id-card text-yellow-400"></i>
+                            Affiliation No:
+                            <span th:text="${header.affiliationNo}"></span>
+                        </p>
+                    </div>
+                </div>
+                <!-- RIGHT SECTION -->
+
+                <div class="text-center sm:text-left space-y-3">
+                    <div class="flex items-center justify-center sm:justify-start gap-2 text-white">
+                        <i class="fa-solid fa-location-dot text-yellow-400"></i>
+                        <p class="text-sm sm:text-base break-words" th:text="${header.location}">
+                            Location
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-center sm:justify-start gap-2 text-white">
+                        <i class="fa-solid fa-phone text-yellow-400"></i>
+                        <p class="text-sm sm:text-base" th:text="${header.phone}">
+                            Phone
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-center sm:justify-start gap-2 text-white">
+                        <i class="fa-solid fa-envelope text-yellow-400"></i>
+                        <p class="text-sm sm:text-base break-all" th:text="${header.email}">
+                            Email
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+
+</html>

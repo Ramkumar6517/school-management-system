@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col justify-between">
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="py-6 sm:py-12 flex-grow">
+        <div class="container mx-auto px-4 w-full max-w-4xl">
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-8">
+
+                <h1 class="text-2xl sm:text-3xl font-bold text-center text-blue-900 mb-2">
+                    Student Registration Form
+                </h1>
+
+                <p class="text-center text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">
+                    Fill in your details for admission approval.
+                </p>
+
+                <form th:action="@{/ui/register}" method="post" enctype="multipart/form-data" autocomplete="off" class="space-y-6">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Student Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="studentName" placeholder="Enter Full Name" required 
+                                autocomplete="new-password"
+                                class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Father Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="fatherName" placeholder="Enter Father Name" required 
+                                autocomplete="new-password"
+                                class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Email <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" name="email" placeholder="Enter Email" required 
+                                autocomplete="new-password"
+                                class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Mobile Number <span class="text-red-500">*</span>
+                            </label>
+                            <input type="tel" name="mobile" placeholder="Enter 10-digit Mobile Number" required
+                                pattern="[6-9][0-9]{9}" title="Please enter a valid 10-digit mobile number starting with 6-9"
+                                maxlength="10" autocomplete="new-password"
+                                class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Date of Birth <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="dob" required autocomplete="off"
+                                class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Applying For Class <span class="text-red-500">*</span>
+                            </label>
+                            <select name="className" required autocomplete="off"
+                                class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                                <option value="">Select Class</option>
+                                <option>Nursery</option>
+                                <option>LKG</option>
+                                <option>UKG</option>
+                                <option>Class 1</option>
+                                <option>Class 2</option>
+                                <option>Class 3</option>
+                                <option>Class 4</option>
+                                <option>Class 5</option>
+                                <option>Class 6</option>
+                                <option>Class 7</option>
+                                <option>Class 8</option>
+                                <option>Class 9</option>
+                                <option>Class 10</option>
+                                <option>Class 11</option>
+                                <option>Class 12</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Student Photo <span class="text-red-500">*</span>
+                            </label>
+                            <input type="file" name="photo" accept=".jpg,.jpeg,.png" required
+                                class="w-full border border-gray-300 rounded-lg p-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Previous Marksheet <span class="text-red-500">*</span>
+                            </label>
+                            <input type="file" name="marksheet" accept=".pdf,.jpg,.jpeg,.png" required
+                                class="w-full border border-gray-300 rounded-lg p-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Aadhar Number <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="aadhar" placeholder="Enter 12-digit Number" required
+                                pattern="[0-9]{12}" title="Please enter a valid 12-digit Aadhar number"
+                                maxlength="12" autocomplete="new-password"
+                                class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Upload Aadhaar Card <span class="text-red-500">*</span>
+                            </label>
+                            <input type="file" name="aadhaarCard" accept=".pdf,.jpg,.jpeg,.png" required
+                                class="w-full border border-gray-300 rounded-lg p-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Gender <span class="text-red-500">*</span>
+                        </label>
+                        <div class="flex flex-wrap gap-6 items-center">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="gender" value="Male" required class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                                <span class="ml-2 text-gray-700">Male</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="gender" value="Female" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                                <span class="ml-2 text-gray-700">Female</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="gender" value="Other" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                                <span class="ml-2 text-gray-700">Other</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Address <span class="text-red-500">*</span>
+                        </label>
+                        <textarea rows="4" name="address" placeholder="Enter Full Address" required autocomplete="off"
+                            class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
+                    </div>
+
+                    <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+                        <p class="text-xs sm:text-sm text-yellow-800">
+                            <strong class="font-semibold text-yellow-950">Important:</strong> 
+                            Registration does not guarantee admission. Your application will be reviewed by the administration team. Admission Number will be generated only after approval.
+                        </p>
+                    </div>
+
+                    <div class="text-center pt-2">
+                        <button type="submit" 
+                            class="w-full sm:w-auto bg-blue-900 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all shadow-md">
+                            Submit Application
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+
+</html>

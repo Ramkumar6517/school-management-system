@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Assign Subject</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 p-2 sm:p-4 md:p-6 min-h-screen">
+
+    <div th:if="${success}" 
+         class="max-w-4xl mx-auto bg-green-100 border-l-4 border-green-500 text-green-700 p-3.5 rounded-r mb-4 shadow-sm text-center font-medium flex items-center justify-center gap-2">
+        <i class="fas fa-check-circle text-lg"></i>
+        <span th:text="${success}"></span>
+    </div>
+
+    <div class="max-w-4xl mx-auto bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-md border border-gray-200">
+
+        <h2 class="text-2xl font-bold mb-6 text-center text-blue-900 flex items-center justify-center gap-2">
+            <i class="fas fa-chalkboard-teacher"></i> Assign Subject To Teacher
+        </h2>
+
+        <form th:action="@{/admin/assign-subject}" method="post" class="space-y-5">
+
+            <div>
+                <label class="block font-semibold text-gray-700 mb-1.5 text-sm sm:text-base">
+                    <i class="fas fa-user-tie text-blue-900 mr-1"></i> Teacher
+                </label>
+                <div class="relative">
+                    <select name="teacherId" required class="w-full border border-gray-300 p-2.5 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none cursor-pointer">
+                        <option value="" disabled selected>Select Teacher</option>
+                        <option th:each="t:${teachers}" th:value="${t.id}" th:text="${t.fullName}"></option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-semibold text-gray-700 mb-1.5 text-sm sm:text-base">
+                    <i class="fas fa-plus text-green-600 mr-1"></i> Create & Add New Subject
+                </label>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="text" id="newSubjectName" class="flex-1 border border-gray-300 p-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter Subject Name">
+                    <button type="button" onclick="addSubject()" class="bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2.5 rounded-lg transition shadow-sm text-sm flex items-center justify-center gap-2">
+                        <i class="fas fa-folder-plus"></i> Add Subject
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label class="font-semibold block text-gray-700 mb-2 text-sm sm:text-base">
+                    <i class="fas fa-book text-blue-900 mr-1"></i> Available Subjects
+                </label>
+                <div id="subjectList" class="space-y-2 max-h-60 overflow-y-auto pr-1 border border-gray-200 p-3 rounded-lg bg-gray-50">
+                    
+                    <div th:each="s:${subjects}" class="flex items-center justify-between border border-gray-300 p-3 rounded-lg bg-white shadow-sm hover:border-blue-300 transition">
+                        <label class="flex items-center gap-2.5 cursor-pointer text-sm font-medium text-gray-800 flex-1">
+                            <input type="checkbox" name="subjectId" th:value="${s.id}" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span th:text="${s.name}"></span>
+                        </label>
+                        
+                        <div class="flex gap-3 text-xs sm:text-sm">
+                            <button type="button" class="text-blue-600 hover:text-blue-800 flex items-center gap-1 font-medium focus:outline-none" th:attr="onclick=|editSubject(${s.id})|">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button type="button" class="text-red-600 hover:text-red-800 flex items-center gap-1 font-medium focus:outline-none" th:attr="onclick=|deleteSubject(${s.id})|">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div>
+                <label class="font-semibold block text-gray-700 mb-2 text-sm sm:text-base">
+                    <i class="fas fa-layer-group text-blue-900 mr-1"></i> Select Target Class
+                </label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                    <label th:each="i:${#numbers.sequence(1,12)}" class="flex items-center gap-2 bg-gray-50 border border-gray-200 p-2.5 rounded-lg cursor-pointer hover:bg-blue-5 hover:border-blue-300 transition text-sm">
+                        <input type="checkbox" name="className" th:value="${i}" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <span th:text="'Class '+${i}" class="text-gray-700 font-medium"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold p-3 rounded-lg transition shadow-md flex items-center justify-center gap-2 text-base">
+                <i class="fas fa-check-double"></i> Assign Configuration
+            </button>
+        </form>
+
+        <hr class="my-6 border-gray-300">
+
+        <div th:if="${selectedTeacher != null}" class="mb-5 text-center bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm sm:text-base text-blue-900">
+            <p class="font-medium">
+                <i class="fas fa-history mr-1 text-blue-700"></i> Showing operation history of: 
+                <b class="text-blue-950 px-1.5 py-0.5 bg-blue-100 rounded" th:text="${selectedTeacher}"></b>
+            </p>
+            <a href="/admin/assign-subject" class="text-red-600 hover:text-red-800 text-xs font-bold underline mt-1.5 inline-block">
+                <i class="fas fa-times-circle"></i> Clear Filters & Show All
+            </a>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4 text-center text-blue-900 flex items-center justify-center gap-2">
+            <i class="fas fa-clipboard-list"></i> Assignment History
+        </h2>
+
+        <div class="overflow-x-auto rounded-lg border border-gray-300 shadow-sm">
+            <table class="w-full text-sm text-left text-gray-700 whitespace-nowrap">
+                <thead class="bg-gray-200 text-gray-800 text-center text-xs uppercase tracking-wider">
+                    <tr>
+                        <th class="p-3 border-b border-gray-300 text-left"><i class="fas fa-user-tie mr-1"></i> Teacher</th>
+                        <th class="p-3 border-b border-gray-300"><i class="fas fa-book mr-1"></i> Subject</th>
+                        <th class="p-3 border-b border-gray-300"><i class="fas fa-graduation-cap mr-1"></i> Class</th>
+                        <th class="p-3 border-b border-gray-300"><i class="fas fa-user-shield mr-1"></i> Assigned By</th>
+                        <th class="p-3 border-b border-gray-300"><i class="fas fa-clock mr-1"></i> Date</th>
+                        <th class="p-3 border-b border-gray-300" colspan="2"><i class="fas fa-tools mr-1"></i> Actions & Status</th>
+                    </tr>
+                </thead>
+                <tbody id="assignmentTableBody" class="divide-y divide-gray-200">
+                    <tr th:each="a:${assignments}" class="assignment-row text-center hover:bg-gray-50 transition">
+                        <td class="p-3 text-left">
+                            <a th:href="@{'/admin/assign-subject?teacherName=' + ${a.teacherName}}"
+                                class="text-blue-600 font-semibold hover:underline flex items-center gap-1">
+                                <i class="far fa-user text-xs text-gray-400"></i>
+                                <span th:text="${a.teacherName}"></span>
+                            </a>
+                        </td>
+                        <td class="p-3 font-medium text-gray-900" th:text="${a.subjectName}"></td>
+                        <td class="p-3"><span class="bg-gray-200 text-gray-800 px-2 py-0.5 rounded text-xs font-semibold" th:text="${a.className}"></span></td>
+                        <td class="p-3 text-gray-600" th:text="${a.assignedBy}"></td>
+                        <td class="p-3 text-xs text-gray-500" th:text="${#temporals.format(a.assignedAt,'dd-MM-yyyy HH:mm')}"></td>
+                        
+                        <td class="p-3 text-xs">
+                            <button type="button" class="text-blue-600 hover:text-blue-800 font-semibold mr-3 focus:outline-none" th:attr="onclick=|editAssignment(${a.id})|">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button type="button" class="text-red-600 hover:text-red-800 font-semibold focus:outline-none" th:attr="onclick=|deleteAssignment(${a.id})|">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </td>
+                        
+                        <td class="p-3 text-xs">
+                            <button type="button" th:if="${a.editEnabled}" class="bg-red-500 hover:bg-red-600 text-white font-medium px-2.5 py-1 rounded shadow-sm transition flex items-center gap-1 mx-auto"
+                                th:attr="onclick=|toggleEdit(${a.id},false)|">
+                                <i class="fas fa-ban"></i> Disable
+                            </button>
+                            <button type="button" th:if="${!a.editEnabled}" class="bg-green-600 hover:bg-green-700 text-white font-medium px-2.5 py-1 rounded shadow-sm transition flex items-center gap-1 mx-auto"
+                                th:attr="onclick=|toggleEdit(${a.id},true)|">
+                                <i class="fas fa-lock-open"></i> Enable
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="paginationContainer" class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 bg-gray-50 p-3 rounded-lg border border-gray-300 text-sm">
+            <div class="text-gray-600 font-medium text-center sm:text-left">
+                Showing <span id="startRow" class="text-blue-900 font-bold">0</span> to <span id="endRow" class="text-blue-900 font-bold">0</span> of <span id="totalRows" class="text-blue-900 font-bold">0</span> entries
+            </div>
+            <div class="flex items-center gap-1.5">
+                <button type="button" id="btnPrev" onclick="prevPage()" class="px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-600 hover:bg-gray-100 font-medium disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1">
+                    <i class="fas fa-chevron-left text-xs"></i> Prev
+                </button>
+                <div id="pageNumbers" class="flex gap-1"></div>
+                <button type="button" id="btnNext" onclick="nextPage()" class="px-3 py-1.5 rounded bg-white border border-gray-300 text-gray-600 hover:bg-gray-100 font-medium disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1">
+                    Next <i class="fas fa-chevron-right text-xs"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- PAGINATION GLOBAL CONFIGURATION ---
+        let currentPage = 1;
+        const rowsPerPage = 5; // Aap isko 10 ya 15 bhi kar sakte ho apne hisab se
+        let rows = [];
+
+        document.addEventListener("DOMContentLoaded", function () {
+            initPagination();
+        });
+
+        function initPagination() {
+            rows = document.querySelectorAll(".assignment-row");
+            if(rows.length === 0) {
+                document.getElementById("paginationContainer").style.display = "none";
+                return;
+            }
+            currentPage = 1;
+            displayPage(currentPage);
+        }
+
+        function displayPage(page) {
+            currentPage = page;
+            let totalRows = rows.length;
+            let totalPages = Math.ceil(totalRows / rowsPerPage);
+
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            let start = (currentPage - 1) * rowsPerPage;
+            let end = start + rowsPerPage;
+
+            // Hide all rows first, then show selected page range
+            rows.forEach((row, index) => {
+                if (index >= start && index < end) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            // Update Text Details
+            document.getElementById("startRow").innerText = totalRows === 0 ? 0 : start + 1;
+            document.getElementById("endRow").innerText = end > totalRows ? totalRows : end;
+            document.getElementById("totalRows").innerText = totalRows;
+
+            // Manage Button States
+            document.getElementById("btnPrev").disabled = (currentPage === 1);
+            document.getElementById("btnNext").disabled = (currentPage === totalPages || totalPages === 0);
+
+            // Render Dynamic Page Numbers
+            renderPageNumbers(totalPages);
+        }
+
+        function renderPageNumbers(totalPages) {
+            const container = document.getElementById("pageNumbers");
+            container.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                let btn = document.createElement("button");
+                btn.type = "button";
+                btn.innerText = i;
+                btn.className = `px-3 py-1.5 text-xs font-semibold rounded transition ${
+                    i === currentPage 
+                    ? "bg-blue-600 text-white shadow-sm" 
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                }`;
+                btn.onclick = function() { displayPage(i); };
+                container.appendChild(btn);
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) displayPage(currentPage - 1);
+        }
+
+        function nextPage() {
+            let totalPages = Math.ceil(rows.length / rowsPerPage);
+            if (currentPage < totalPages) displayPage(currentPage + 1);
+        }
+
+
+        // --- EXISTING CRUD AJAX OPERATIONS ---
+
+        // ADD SUBJECT
+        function addSubject() {
+            let name = document.getElementById("newSubjectName").value;
+
+            if (name.trim() == "") {
+                alert("Subject name required");
+                return;
+            }
+
+            fetch("/admin/add-subject-ajax", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name,
+                    className: "12"
+                })
+            })
+            .then(res => res.json())
+            .then(() => {
+                location.reload();
+            });
+        }
+
+        // DELETE SUBJECT
+        function deleteSubject(id) {
+            if (!confirm("Delete subject?"))
+                return;
+
+            fetch("/admin/subject/" + id, {
+                method: "DELETE"
+            })
+            .then(() => location.reload());
+        }
+
+        // EDIT SUBJECT
+        function editSubject(id) {
+            let name = prompt("Enter new subject name");
+
+            if (!name)
+                return;
+
+            fetch("/admin/subject/edit/" + id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name
+                })
+            })
+            .then(() => location.reload());
+        }
+
+        // DELETE ASSIGNMENT
+        function deleteAssignment(id) {
+            if (!confirm("Delete this assignment?"))
+                return;
+
+            fetch("/admin/assignment/" + id, {
+                method: "DELETE"
+            })
+            .then(() => location.reload());
+        }
+
+        // EDIT ASSIGNMENT
+        function editAssignment(id) {
+            let cls = prompt("Enter new class");
+
+            if (!cls)
+                return;
+
+            fetch("/admin/assignment/" + id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    className: cls
+                })
+            })
+            .then(() => location.reload());
+        }
+
+        // TOGGLE EDIT PERMISSION STATUS
+        function toggleEdit(id, status) {
+            fetch("/admin/assignment/edit-status/" + id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    editEnabled: status
+                })
+            })
+            .then(() => location.reload());
+        }
+    </script>
+
+</body>
+</html>
